@@ -1,13 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 
-/**
- * Vervang HIER je Formspree endpoint:
- *  - Maak gratis een form aan op https://formspree.io
- *  - Kopieer de "action" URL en plak hem hieronder bij FORMSPREE_URL
- */
-const FORMSPREE_URL = "https://formspree.io/f/xblzdbal"; // <-- vervang
+/** VUL HIER JE FORMSPREE ENDPOINT IN, bijv. https://formspree.io/f/abcd1234 */
+const FORMSPREE_URL = "https://formspree.io/forms/xblzdbal"; // <-- vervang
 
 export default function App() {
+  const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSending(true);
+    setError("");
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      });
+
+      if (res.ok) {
+        form.reset();
+        setSubmitted(true);
+      } else {
+        const json = await res.json().catch(() => null);
+        setError(json?.error || "Verzenden is niet gelukt. Probeer het later nog eens.");
+      }
+    } catch {
+      setError("Er ging iets mis met de verbinding. Probeer het later opnieuw.");
+    } finally {
+      setSending(false);
+    }
+  }
+
   return (
     <main className="min-h-screen text-slate-800 bg-gradient-to-b from-white to-slate-50">
       {/* Header */}
@@ -16,8 +45,12 @@ export default function App() {
           <div className="flex items-center gap-3">
             <Logo className="w-16 h-16" />
             <div>
-              <h1 className="text-3xl font-extrabold leading-tight">Document Support Service</h1>
-              <p className="text-m text-slate-900 -mt-0.5">Wij maken ruimte, u wint tijd.</p>
+              <h1 className="text-3xl font-extrabold leading-tight text-slate-900">
+                Document Support Service
+              </h1>
+              <p className="text-base text-slate-600 mt-1">
+                Wij maken ruimte, u wint tijd.
+              </p>
             </div>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -25,8 +58,9 @@ export default function App() {
             <a href="#pakketten" className="hover:text-slate-900 text-slate-600">Pakketten</a>
             <a href="#werkwijze" className="hover:text-slate-900 text-slate-600">Werkwijze</a>
             <a href="#veiligheid" className="hover:text-slate-900 text-slate-600">Veiligheid</a>
-            <a href="#contact" className="hover:text-slate-900 text-slate-600">Contact</a>
-            <a href="#cta" className="inline-flex items-center rounded-2xl px-4 py-2 bg-slate-900 text-white shadow-sm hover:shadow transition">Offerte aanvragen</a>
+            <a href="#cta" className="inline-flex items-center rounded-2xl px-4 py-2 bg-sky-600 text-white shadow-sm hover:bg-sky-700 transition">
+              Offerte aanvragen
+            </a>
           </nav>
         </div>
       </header>
@@ -43,11 +77,16 @@ export default function App() {
               Van papierchaos naar digitale rust
             </h2>
             <p className="mt-4 text-lg text-slate-600">
-              Wij helpen MKB en organisaties in Drenthe & Groningen met het veilig opruimen, digitaliseren en beheren van documenten. Snel, AVG-proof en zonder gedoe.
+              Wij helpen MKB en organisaties in Drenthe &amp; Groningen met het veilig
+              opruimen, digitaliseren en beheren van documenten. Snel, AVG-proof en zonder gedoe.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href="#contact" className="inline-flex rounded-2xl px-5 py-3 bg-slate-900 text-white shadow hover:shadow-md transition">Plan gratis intake</a>
-              <a href="#pakketten" className="inline-flex rounded-2xl px-5 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50">Bekijk pakketten</a>
+              <a href="#cta" className="inline-flex rounded-2xl px-5 py-3 bg-sky-600 text-white shadow hover:bg-sky-700 transition">
+                Plan gratis intake
+              </a>
+              <a href="#pakketten" className="inline-flex rounded-2xl px-5 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50">
+                Bekijk pakketten
+              </a>
             </div>
             <div className="mt-6 flex items-center gap-4 text-sm text-slate-500">
               <Badge>AVG-proof</Badge>
@@ -76,7 +115,7 @@ export default function App() {
           <ServiceCard title="Archiefdigitalisering" icon="scanner">
             Snel scannen met OCR naar doorzoekbare PDF/A. Logische bestandsnamen en mappenstructuur.
           </ServiceCard>
-          <ServiceCard title="Bestanden & Cloud" icon="cloud">
+          <ServiceCard title="Bestanden &amp; Cloud" icon="cloud">
             Opschonen en structureren van netwerkschijven, OneDrive/SharePoint of Google Drive.
           </ServiceCard>
           <ServiceCard title="Abonnement" icon="repeat">
@@ -134,7 +173,7 @@ export default function App() {
 
       {/* Veilig & AVG-proof */}
       <section id="veiligheid" className="mx-auto max-w-6xl px-4 py-16">
-        <h3 className="text-2xl md:text-3xl font-semibold">Veilig & AVG-proof werken</h3>
+        <h3 className="text-2xl md:text-3xl font-semibold">Veilig &amp; AVG-proof werken</h3>
         <p className="mt-2 text-slate-600 max-w-3xl">
           Uw documenten bevatten vaak gevoelige informatie. Wij werken daarom met duidelijke, veilige richtlijnen en minimale bewaartermijnen.
         </p>
@@ -159,141 +198,99 @@ export default function App() {
             We hanteren <strong>zo min mogelijk gegevens, zo kort mogelijk bewaren</strong>. Heldere afspraken in de VO.
           </InfoCard>
         </div>
+      </section>
 
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="font-medium">Transparant & aantoonbaar</div>
-            <p className="text-sm text-slate-600">
-              U ontvangt desgewenst: getekende NDA/VO, logboek werkzaamheden en het vernietigingscertificaat.
-            </p>
-          </div>
-          <a href="#cta" className="inline-flex rounded-2xl px-5 py-3 bg-slate-900 text-white shadow hover:shadow-md">
-            Plan gratis intake
-          </a>
-        </div>
+      {/* CTA + Afbeelding + Contactformulier */}
       <section id="cta" className="relative">
-  <div className="absolute inset-0 -z-10 bg-gradient-to-r from-sky-50 to-blue-50" />
-  <div className="mx-auto max-w-6xl px-4 py-16 md:py-20 grid md:grid-cols-2 gap-10 items-center">
-    
-    {/* Tekstblok links */}
-    <div>
-      <h3 className="text-3xl md:text-4xl font-bold text-slate-900">
-        Gratis intake binnen 48 uur
-      </h3>
-      <p className="mt-4 text-lg text-slate-700">
-        We bekijken uw situatie, schatten de omvang in en geven een vaste prijs waar mogelijk.
-      </p>
-      <ul className="mt-6 text-slate-600 list-disc list-inside space-y-2">
-        <li>AVG-proof werken (VO + NDA beschikbaar)</li>
-        <li>Vernietigingscertificaat bij papierafvoer</li>
-        <li>Heldere planning en één contactpersoon</li>
-      </ul>
-    </div>
-
-    {/* Afbeelding + formulier rechts */}
-    <div id="contact" className="space-y-6">
-      {/* Afbeelding */}
-      <div className="relative w-full h-48 md:h-56">
-        <img
-          src="/archiefbeheer.jpg"
-          alt="Archiefopruiming en documentbeheer"
-          className="rounded-2xl shadow-md object-cover w-full h-full"
-        />
-      </div>
-
-      {/* Feedbackmeldingen */}
-      {submitted && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 p-4">
-          <div className="font-medium">Bedankt! 🎉</div>
-          <div className="text-sm">
-            Uw bericht is ontvangen. We nemen zo snel mogelijk contact met u op.
-          </div>
-        </div>
-      )}
-      {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 text-rose-800 p-4">
-          <div className="font-medium">Verzenden mislukt</div>
-          <div className="text-sm">{error}</div>
-        </div>
-      )}
-
-      {/* Contactformulier */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-2xl p-6 shadow-lg ring-1 ring-slate-200 space-y-4"
-      >
-        <div>
-          <label className="text-sm text-slate-600" htmlFor="bedrijf">
-            Bedrijfsnaam
-          </label>
-          <input
-            id="bedrijf"
-            name="bedrijf"
-            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
-            placeholder="Uw bedrijfsnaam"
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-sky-50 to-blue-50" />
+        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20 grid md:grid-cols-2 gap-10 items-center">
+          {/* Tekst links */}
           <div>
-            <label className="text-sm text-slate-600" htmlFor="naam">
-              Naam
-            </label>
-            <input
-              id="naam"
-              name="naam"
-              required
-              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
-              placeholder="Uw naam"
-            />
+            <h3 className="text-3xl md:text-4xl font-bold text-slate-900">
+              Gratis intake binnen 48 uur
+            </h3>
+            <p className="mt-4 text-lg text-slate-700">
+              We bekijken uw situatie, schatten de omvang in en geven een vaste prijs waar mogelijk.
+            </p>
+            <ul className="mt-6 text-slate-600 list-disc list-inside space-y-2">
+              <li>AVG-proof werken (VO + NDA beschikbaar)</li>
+              <li>Vernietigingscertificaat bij papierafvoer</li>
+              <li>Heldere planning en één contactpersoon</li>
+            </ul>
           </div>
-          <div>
-            <label className="text-sm text-slate-600" htmlFor="email">
-              E-mail
-            </label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              required
-              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
-              placeholder="naam@bedrijf.nl"
-            />
-          </div>
-        </div>
-        <div>
-          <label className="text-sm text-slate-600" htmlFor="bericht">
-            Bericht
-          </label>
-          <textarea
-            id="bericht"
-            name="bericht"
-            required
-            className="mt-1 w-full min-h-[110px] rounded-xl border border-slate-300 px-3 py-2"
-            placeholder="Korte omschrijving van uw archief / wens"
-          />
-        </div>
-        <button
-          disabled={sending}
-          type="submit"
-          className="w-full rounded-2xl px-5 py-3 bg-sky-600 text-white font-semibold shadow hover:bg-sky-700 transition disabled:opacity-70"
-        >
-          {sending ? "Versturen…" : "Plan intake"}
-        </button>
-      </form>
-    </div>
-  </div>
-</section>
 
+          {/* Afbeelding + formulier rechts */}
+          <div id="contact" className="space-y-6">
+            {/* Afbeelding uit /public */}
+            <div className="relative w-full h-48 md:h-56">
+              <img
+                src="/archiefbeheer.jpg"  /* pas naar .png als je png gebruikt */
+                alt="Archiefopruiming en documentbeheer"
+                className="rounded-2xl shadow-md object-cover w-full h-full"
+              />
+            </div>
+
+            {/* Succes / error-meldingen */}
+            {submitted && (
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 p-4">
+                <div className="font-medium">Bedankt! 🎉</div>
+                <div className="text-sm">Uw bericht is ontvangen. We nemen zo snel mogelijk contact met u op.</div>
+              </div>
+            )}
+            {error && (
+              <div className="rounded-xl border border-rose-200 bg-rose-50 text-rose-800 p-4">
+                <div className="font-medium">Verzenden mislukt</div>
+                <div className="text-sm">{error}</div>
+              </div>
+            )}
+
+            {/* Formulier */}
+            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 shadow-lg ring-1 ring-slate-200 space-y-4">
+              {/* Honeypot tegen spam */}
+              <input type="text" name="_gotcha" className="hidden" tabIndex="-1" autoComplete="off" />
+              <input type="hidden" name="_subject" value="Nieuwe intake-aanvraag via Document Support Service" />
+
+              <div>
+                <label className="text-sm text-slate-600" htmlFor="bedrijf">Bedrijfsnaam</label>
+                <input id="bedrijf" name="Bedrijfsnaam" className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Uw bedrijfsnaam" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm text-slate-600" htmlFor="naam">Naam</label>
+                  <input id="naam" name="Naam" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Uw naam" />
+                </div>
+                <div>
+                  <label className="text-sm text-slate-600" htmlFor="email">E-mail</label>
+                  <input id="email" type="email" name="email" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="naam@bedrijf.nl" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm text-slate-600" htmlFor="bericht">Bericht</label>
+                <textarea id="bericht" name="Bericht" required className="mt-1 w-full min-h-[110px] rounded-xl border border-slate-300 px-3 py-2" placeholder="Korte omschrijving van uw archief / wens" />
+              </div>
+
+              <button disabled={sending} type="submit" className="w-full rounded-2xl px-5 py-3 bg-sky-600 text-white font-semibold shadow hover:bg-sky-700 transition disabled:opacity-70">
+                {sending ? "Versturen…" : "Plan intake"}
+              </button>
+              <p className="text-xs text-slate-500">
+                Door te verzenden gaat u akkoord met onze voorwaarden en privacyverklaring.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-10 grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center gap-3">
-              <Logo className="w-8 h-8" />
+              <Logo className="w-10 h-10" />
               <div className="font-semibold">Document Support Service</div>
             </div>
-            <p className="mt-3 text-sm text-slate-600 max-w-sm">Wij maken ruimte, u wint tijd. Documentbeheer & archiefoplossingen voor Drenthe & Groningen.</p>
+            <p className="mt-3 text-sm text-slate-600 max-w-sm">
+              Wij maken ruimte, u wint tijd. Documentbeheer &amp; archiefoplossingen voor Drenthe &amp; Groningen.
+            </p>
           </div>
           <div>
             <div className="font-medium">Contact</div>
@@ -314,14 +311,15 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <div className="text-center text-xs text-slate-500 pb-8">© {new Date().getFullYear()} Document Support Service. Alle rechten voorbehouden.</div>
+        <div className="text-center text-xs text-slate-500 pb-8">
+          © {new Date().getFullYear()} Document Support Service. Alle rechten voorbehouden.
+        </div>
       </footer>
     </main>
   );
 }
 
-/* ========== Kleine UI helpers ========== */
-
+/* ===== kleine UI helpers ===== */
 function Badge({ children }) {
   return (
     <span className="inline-flex items-center rounded-full border border-slate-300 bg-white px-3 py-1 text-xs">
@@ -353,20 +351,20 @@ function ServiceCard({ title, children, icon }) {
 
 function PlanCard({ name, price, highlights, featured }) {
   return (
-    <div className={"rounded-3xl p-6 border shadow-sm " + (featured ? "border-slate-900 shadow-md" : "border-slate-200") }>
+    <div className={"rounded-3xl p-6 border shadow-sm " + (featured ? "border-sky-600 shadow-md" : "border-slate-200") }>
       <div className="flex items-baseline justify-between">
         <div className="text-lg font-semibold">{name}</div>
-        {featured && <span className="text-xs rounded-full bg-slate-900 text-white px-2 py-1">Meest gekozen</span>}
+        {featured && <span className="text-xs rounded-full bg-sky-600 text-white px-2 py-1">Meest gekozen</span>}
       </div>
       <div className="mt-3 text-2xl font-bold">{price}</div>
       <ul className="mt-4 space-y-2 text-sm text-slate-600">
         {highlights.map((h, i) => (
           <li key={i} className="flex gap-2">
-            <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-slate-900"/> {h}
+            <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-sky-600"/> {h}
           </li>
         ))}
       </ul>
-      <a href="#cta" className="mt-6 inline-flex w-full justify-center rounded-2xl px-4 py-2 bg-slate-900 text-white hover:shadow">Offerte aanvragen</a>
+      <a href="#cta" className="mt-6 inline-flex w-full justify-center rounded-2xl px-4 py-2 bg-sky-600 text-white hover:bg-sky-700">Offerte aanvragen</a>
     </div>
   );
 }
@@ -436,4 +434,5 @@ function Illustration() {
     </svg>
   );
 }
+
 
