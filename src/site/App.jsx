@@ -315,7 +315,7 @@ export default function App() {
           © {new Date().getFullYear()} Document Support Service. Alle rechten voorbehouden.
         </div>
       </footer>
-    </main>
+    </section>
   );
 }
 
