@@ -16,8 +16,8 @@ export default function App() {
           <div className="flex items-center gap-3">
             <Logo className="w-9 h-9" />
             <div>
-              <h1 className="text-xl font-semibold leading-tight">Document Support Service</h1>
-              <p className="text-xs text-slate-500 -mt-0.5">Wij maken ruimte, u wint tijd.</p>
+              <h1 className="text-3xl font-extrabold leading-tight">Document Support Service</h1>
+              <p className="text-xs text-slate-900 -mt-0.5">Wij maken ruimte, u wint tijd.</p>
             </div>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
