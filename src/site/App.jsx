@@ -171,60 +171,119 @@ export default function App() {
             Plan gratis intake
           </a>
         </div>
-      </section>
-
-      {/* CTA + Contactformulier */}
       <section id="cta" className="relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-sky-50 to-blue-50" />
-        <div className="mx-auto max-w-6xl px-4 py-16 md:py-20 grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h3 className="text-2xl md:text-3xl font-semibold text-slate-900">Gratis intake binnen 48 uur</h3>
-            <p className="mt-3 text-slate-600">We bekijken uw situatie, schatten de omvang in en geven een vaste prijs waar mogelijk.</p>
-            <ul className="mt-4 text-slate-600 list-disc list-inside">
-              <li>AVG-proof werken (VO + NDA beschikbaar)</li>
-              <li>Vernietigingscertificaat bij papierafvoer</li>
-              <li>Heldere planning en één contactpersoon</li>
-            </ul>
+  <div className="absolute inset-0 -z-10 bg-gradient-to-r from-sky-50 to-blue-50" />
+  <div className="mx-auto max-w-6xl px-4 py-16 md:py-20 grid md:grid-cols-2 gap-10 items-center">
+    
+    {/* Tekstblok links */}
+    <div>
+      <h3 className="text-3xl md:text-4xl font-bold text-slate-900">
+        Gratis intake binnen 48 uur
+      </h3>
+      <p className="mt-4 text-lg text-slate-700">
+        We bekijken uw situatie, schatten de omvang in en geven een vaste prijs waar mogelijk.
+      </p>
+      <ul className="mt-6 text-slate-600 list-disc list-inside space-y-2">
+        <li>AVG-proof werken (VO + NDA beschikbaar)</li>
+        <li>Vernietigingscertificaat bij papierafvoer</li>
+        <li>Heldere planning en één contactpersoon</li>
+      </ul>
+    </div>
+
+    {/* Afbeelding + formulier rechts */}
+    <div id="contact" className="space-y-6">
+      {/* Afbeelding */}
+      <div className="relative w-full h-48 md:h-56">
+        <img
+          src="/archiefbeheer.jpg"
+          alt="Archiefopruiming en documentbeheer"
+          className="rounded-2xl shadow-md object-cover w-full h-full"
+        />
+      </div>
+
+      {/* Feedbackmeldingen */}
+      {submitted && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 p-4">
+          <div className="font-medium">Bedankt! 🎉</div>
+          <div className="text-sm">
+            Uw bericht is ontvangen. We nemen zo snel mogelijk contact met u op.
           </div>
-
-          {/* Contactformulier met Formspree */}
-          <form
-            action={FORMSPREE_URL}
-            method="POST"
-            className="bg-white rounded-2xl p-6 shadow-lg ring-1 ring-slate-200 space-y-4"
-            id="contact"
-          >
-            {/* honeypot tegen spam */}
-            <input type="text" name="_gotcha" className="hidden" tabIndex="-1" autoComplete="off" />
-            <input type="hidden" name="_subject" value="Nieuwe intake-aanvraag via Document Support Service" />
-
-            <div>
-              <label className="text-sm text-slate-600">Bedrijfsnaam</label>
-              <input name="Bedrijfsnaam" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-slate-900" placeholder="Uw bedrijfsnaam" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm text-slate-600">Naam</label>
-                <input name="Naam" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-slate-900" placeholder="Uw naam" />
-              </div>
-              <div>
-                <label className="text-sm text-slate-600">E-mail</label>
-                <input type="email" name="Email" required className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-slate-900" placeholder="naam@bedrijf.nl" />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm text-slate-600">Bericht</label>
-              <textarea name="Bericht" required className="mt-1 w-full min-h-[110px] rounded-xl border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-slate-900" placeholder="Korte omschrijving van uw archief / wens" />
-            </div>
-            <button type="submit" className="w-full rounded-2xl px-5 py-3 bg-slate-900 text-white shadow hover:shadow-md">
-              Plan intake
-            </button>
-            <p className="text-xs text-slate-500">
-              Door te verzenden gaat u akkoord met onze voorwaarden en privacyverklaring.
-            </p>
-          </form>
         </div>
-      </section>
+      )}
+      {error && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 text-rose-800 p-4">
+          <div className="font-medium">Verzenden mislukt</div>
+          <div className="text-sm">{error}</div>
+        </div>
+      )}
+
+      {/* Contactformulier */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-2xl p-6 shadow-lg ring-1 ring-slate-200 space-y-4"
+      >
+        <div>
+          <label className="text-sm text-slate-600" htmlFor="bedrijf">
+            Bedrijfsnaam
+          </label>
+          <input
+            id="bedrijf"
+            name="bedrijf"
+            className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+            placeholder="Uw bedrijfsnaam"
+          />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm text-slate-600" htmlFor="naam">
+              Naam
+            </label>
+            <input
+              id="naam"
+              name="naam"
+              required
+              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+              placeholder="Uw naam"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-slate-600" htmlFor="email">
+              E-mail
+            </label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              required
+              className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"
+              placeholder="naam@bedrijf.nl"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-sm text-slate-600" htmlFor="bericht">
+            Bericht
+          </label>
+          <textarea
+            id="bericht"
+            name="bericht"
+            required
+            className="mt-1 w-full min-h-[110px] rounded-xl border border-slate-300 px-3 py-2"
+            placeholder="Korte omschrijving van uw archief / wens"
+          />
+        </div>
+        <button
+          disabled={sending}
+          type="submit"
+          className="w-full rounded-2xl px-5 py-3 bg-sky-600 text-white font-semibold shadow hover:bg-sky-700 transition disabled:opacity-70"
+        >
+          {sending ? "Versturen…" : "Plan intake"}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
 
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white">
