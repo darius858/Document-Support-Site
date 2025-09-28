@@ -14,7 +14,7 @@ export default function App() {
       <header className="sticky top-0 z-40 backdrop-blur bg-white/70 border-b border-slate-200">
         <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Logo className="w-9 h-9" />
+            <Logo className="w-16 h-16" />
             <div>
               <h1 className="text-3xl font-extrabold leading-tight">Document Support Service</h1>
               <p className="text-m text-slate-900 -mt-0.5">Wij maken ruimte, u wint tijd.</p>
