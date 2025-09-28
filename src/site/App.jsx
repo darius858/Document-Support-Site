@@ -5,7 +5,7 @@ import React from "react";
  *  - Maak gratis een form aan op https://formspree.io
  *  - Kopieer de "action" URL en plak hem hieronder bij FORMSPREE_URL
  */
-const FORMSPREE_URL = "https://formspree.io/f/JE-ENDPOINT-HIER"; // <-- vervang
+const FORMSPREE_URL = "https://formspree.io/f/xblzdbal"; // <-- vervang
 
 export default function App() {
   return (
