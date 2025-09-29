@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 /** VUL HIER JE FORMSPREE ENDPOINT IN, bv: https://formspree.io/f/abcd1234 */
-const FORMSPREE_URL = "https://formspree.io/f/JE-ENDPOINT-HIER"; // <-- vervang
+const FORMSPREE_URL = "https://formspree.io/forms/xblzdbal"; // <-- vervang
 
 export default function App() {
   const [submitted, setSubmitted] = useState(false);
